@@ -64,6 +64,9 @@ extern int p0out;
 extern int p1out;
 extern int p2out;
 extern int p3out;
+extern int p4out;
+extern int p5out;
+extern int p6out;
 
 // current clock count
 unsigned int clocks;
@@ -94,6 +97,7 @@ extern int emu_reset(struct em8051 *aCPU);
 extern int emu_readvalue(struct em8051 *aCPU, const char *aPrompt, int aOldvalue, int aValueSize);
 extern int emu_readhz(struct em8051 *aCPU, const char *aPrompt, int aOldvalue);
 extern void emu_load(struct em8051 *aCPU);
+extern void mem_load(struct em8051 *aCPU);
 extern void emu_exception(struct em8051 *aCPU, int aCode);
 extern void emu_popup(struct em8051 *aCPU, char *aTitle, char *aMessage);
 

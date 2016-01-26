@@ -265,22 +265,22 @@ enum TMOD_MASKS
 
 enum IP0_MASKS
 {
-    IP0MASK_IADC = 0x01,
-    IP0MASK_IEX2 = 0x02,
-    IP0MASK_IEX3 = 0x04,
-    IP0MASK_IEX4 = 0x08,
-    IP0MASK_IEX5 = 0x10,
-    IP0MASK_IEX6 = 0x20
+    IP0MASK_IADC = 0x01, // A/D converter
+    IP0MASK_IEX2 = 0x02, // External interrupt 2
+    IP0MASK_IEX3 = 0x04, // External interrupt 3
+    IP0MASK_IEX4 = 0x08, // External interrupt 4
+    IP0MASK_IEX5 = 0x10, // External interrupt 5
+    IP0MASK_IEX6 = 0x20 // External interrupt 6
 };
 
 enum IP1_MASKS
 {
-    IP1MASK_IE0 = 0x01,
-    IP1MASK_TF0 = 0x02,
-    IP1MASK_IE1 = 0x04,
-    IP1MASK_TF1 = 0x08,
-    IP1MASK_RI_TI = 0x10,
-    IP1MASK_TF2_EXF2 = 0x20
+    IP1MASK_IE0 = 0x01, // External interrupt 0
+    IP1MASK_TF0 = 0x02, // Timer overflow
+    IP1MASK_IE1 = 0x04, // External interrupt 1
+    IP1MASK_TF1 = 0x08, // Timer 1 overflow
+    IP1MASK_RI_TI = 0x10, // Serial channel 
+    IP1MASK_TF2_EXF2 = 0x20 // Timer 2 overflow/ext. reload
 };
 
 enum EM8051_EXCEPTION

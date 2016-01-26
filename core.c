@@ -280,18 +280,18 @@ void handle_interrupts(struct em8051 *aCPU)
     if (aCPU->mInterruptActive > 1) 
         return;    
 
-    if (aCPU->mSFR[REG_IE] & IEMASK_EA)
+    if (aCPU->mSFR[REG_IEN0] & IEN0MASK_EA)
     {
         // Interrupts enabled
-        if (aCPU->mSFR[REG_IE] & IEMASK_EX0 && aCPU->mSFR[REG_TCON] & TCONMASK_IE0)
+        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_EX0 && aCPU->mSFR[REG_TCON] & TCONMASK_IE0)
         {
             // External int 0 
             dest_ip = 0x3;
-            if (aCPU->mSFR[REG_IP] & IPMASK_PX0)
+            if (aCPU->mSFR[REG_IP1] & IP1MASK_IE0)
                 hi = 1;
             lo = 1;
         }
-        if (aCPU->mSFR[REG_IE] & IEMASK_ET0 && aCPU->mSFR[REG_TCON] & TCONMASK_TF0 && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_ET0 && aCPU->mSFR[REG_TCON] & TCONMASK_TF0 && !hi)
         {
             // Timer/counter 0 
             if (!lo)
@@ -299,13 +299,13 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0xb;
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP] & IPMASK_PT0)
+            if (aCPU->mSFR[REG_IP1] & IP1MASK_TF0)
             {
                 hi = 1;
                 dest_ip = 0xb;
             }
         }
-        if (aCPU->mSFR[REG_IE] & IEMASK_EX1 && aCPU->mSFR[REG_TCON] & TCONMASK_IE1 && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_EX1 && aCPU->mSFR[REG_TCON] & TCONMASK_IE1 && !hi)
         {
             // External int 1 
             if (!lo)
@@ -313,13 +313,13 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0x13;
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP] & IPMASK_PX1)
+            if (aCPU->mSFR[REG_IP1] & IP1MASK_IE1)
             {
                 hi = 1;
                 dest_ip = 0x13;
             }
         }
-        if (aCPU->mSFR[REG_IE] & IEMASK_ET1 && aCPU->mSFR[REG_TCON] & TCONMASK_TF1 && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_ET1 && aCPU->mSFR[REG_TCON] & TCONMASK_TF1 && !hi)
         {
             // Timer/counter 1 enabled
             if (!lo)
@@ -327,13 +327,13 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0x1b;
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP] & IPMASK_PT1)
+            if (aCPU->mSFR[REG_IP1] & IP1MASK_TF1)
             {
                 hi = 1;
                 dest_ip = 0x1b;
             }
         }
-        if (aCPU->mSFR[REG_IE] & IEMASK_ES && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_ES && !hi)
         {
             // Serial port interrupt 
             if (!lo)
@@ -341,14 +341,14 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0x23;
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP] & IPMASK_PS)
+            if (aCPU->mSFR[REG_IP1] & IP1MASK_RI_TI)
             {
                 hi = 1;
                 dest_ip = 0x23;
             }
             // TODO
         }
-        if (aCPU->mSFR[REG_IE] & IEMASK_ET2 && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_ET2 && !hi)
         {
             // Timer 2 (8052 only)
             if (!lo)
@@ -356,7 +356,7 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0x2b; // guessed
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP] & IPMASK_PT2)
+            if (aCPU->mSFR[REG_IP1] & IP1MASK_TF2_EXF2)
             {
                 hi = 1;
                 dest_ip = 0x2b; // guessed
@@ -468,6 +468,8 @@ void reset(struct em8051 *aCPU, int aWipe)
     aCPU->mSFR[REG_P1] = 0xff;
     aCPU->mSFR[REG_P2] = 0xff;
     aCPU->mSFR[REG_P3] = 0xff;
+    aCPU->mSFR[REG_P4] = 0xff;
+    aCPU->mSFR[REG_P5] = 0xff;
 
     // build function pointer lists
 
@@ -532,4 +534,19 @@ int load_obj(struct em8051 *aCPU, char *aFilename)
     }
 	  fclose(f);
     return -5;
+}
+
+int load_mem(struct em8051 *aCPU, char *aFilename)
+{
+    FILE *f;    
+    int address = 0;
+    int i;
+    
+    if (aFilename == 0 || aFilename[0] == 0)
+        return -1;
+    f = fopen(aFilename, "rb");
+    if (!f) return -1;
+    fread(aCPU->mExtData, aCPU->mExtDataSize, 1, f);
+    fclose(f);
+    return 0; // we're done
 }

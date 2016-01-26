@@ -17,6 +17,7 @@ emu
 
 # hex image
 *.hex
+*.mem
 
 #editor temp files
 \#*

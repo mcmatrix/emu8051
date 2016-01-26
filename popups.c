@@ -220,6 +220,73 @@ void emu_load(struct em8051 *aCPU)
     }
 }
 
+void mem_load(struct em8051 *aCPU)
+{
+    WINDOW * exc;
+    int pos = 0;
+    int ch = 0;
+    int result;
+    pos = (int)strlen(filename);
+
+    runmode = 0;
+    setSpeed(speed, runmode);
+    exc = subwin(stdscr, 5, 50, (LINES-6)/2, (COLS-50)/2);
+    wattron(exc, A_REVERSE);
+    werase(exc);
+    box(exc,ACS_VLINE,ACS_HLINE);
+    mvwaddstr(exc, 0, 2, "Load dump file to mem");
+    wattroff(exc, A_REVERSE);
+    wmove(exc, 2, 2);
+    //            12345678901234567890123456780123456789012345
+    waddstr(exc,"[____________________________________________]"); 
+    wmove(exc,2,3);
+    waddstr(exc, filename);
+    wrefresh(exc);
+
+    while (ch != '\n')
+    {
+        ch = getch();
+        if (ch > 31 && ch < 127 || ch > 127 && ch < 255)
+        {
+            if (pos < 44)
+            {
+                filename[pos] = ch;
+                pos++;
+                filename[pos] = 0;
+                waddch(exc,ch);
+                wrefresh(exc);
+            }
+        }
+        if (ch == KEY_DC || ch == 8 || ch == KEY_BACKSPACE)
+        {
+            if (pos > 0)
+            {
+                pos--;
+                filename[pos] = 0;
+                wmove(exc,2,3+pos);
+                waddch(exc,'_');
+                wmove(exc,2,3+pos);
+                wrefresh(exc);
+            }
+        }
+    }
+
+    result = load_mem(aCPU, filename);
+    delwin(exc);
+    refreshview(aCPU);
+
+    switch (result)
+    {
+    case -1:
+        emu_popup(aCPU, "Load error", "File not found.");
+        break;
+    case -2:
+        emu_popup(aCPU, "Load error", "Bad file format.");
+        break;
+    }
+}
+
+
 int emu_readvalue(struct em8051 *aCPU, const char *aPrompt, int aOldvalue, int aValueSize)
 {
     WINDOW * exc;

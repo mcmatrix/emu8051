@@ -44,16 +44,8 @@ void mem_memonic(int aValue, char *aBuffer)
     {
         switch (aValue - 0x80)
         {
-        case REG_ACC:
-            strcpy(aBuffer, "ACC"); 
-            done = 1;
-            break;
-        case REG_B:
-            strcpy(aBuffer, "B");
-            done = 1;
-            break;
-        case REG_PSW:
-            strcpy(aBuffer, "PSW");
+        case REG_P0:
+            strcpy(aBuffer, "P0");
             done = 1;
             break;
         case REG_SP:
@@ -67,61 +59,157 @@ void mem_memonic(int aValue, char *aBuffer)
         case REG_DPH:
             strcpy(aBuffer, "DPH");
             done = 1;
-            break;
-        case REG_P0:
-            strcpy(aBuffer, "P0");
-            done = 1;
-            break;
-        case REG_P1:
-            strcpy(aBuffer, "P1");
-            done = 1;
-            break;
-        case REG_P2:
-            strcpy(aBuffer, "P2");
-            done = 1;
-            break;
-        case REG_P3:
-            strcpy(aBuffer, "P3");
-            done = 1;
-            break;
-        case REG_IP:
-            strcpy(aBuffer, "IP");
-            done = 1;
-            break;
-        case REG_IE:
-            strcpy(aBuffer, "IE");
-            done = 1;
-            break;
-        case REG_TMOD:
-            strcpy(aBuffer, "TMOD");
+            break;            
+        case REG_PCON:
+            strcpy(aBuffer, "PCON");
             done = 1;
             break;
         case REG_TCON:
             strcpy(aBuffer, "TCON");
             done = 1;
             break;
-        case REG_TH0:
-            strcpy(aBuffer, "TH0");
+        case REG_TMOD:
+            strcpy(aBuffer, "TMOD");
             done = 1;
             break;
         case REG_TL0:
             strcpy(aBuffer, "TL0");
+            done = 1;
+            break;            
+        case REG_TL1:
+            strcpy(aBuffer, "TL1");
+            done = 1;
+            break;
+        case REG_TH0:
+            strcpy(aBuffer, "TH0");
             done = 1;
             break;
         case REG_TH1:
             strcpy(aBuffer, "TH1");
             done = 1;
             break;
-        case REG_TL1:
-            strcpy(aBuffer, "TL1");
+        case REG_P1:
+            strcpy(aBuffer, "P1");
             done = 1;
             break;
         case REG_SCON:
             strcpy(aBuffer, "SCON");
             done = 1;
             break;
-        case REG_PCON:
-            strcpy(aBuffer, "PCON");
+        case REG_SBUF:
+            strcpy(aBuffer, "SBUF");
+            done = 1;
+            break;
+        case REG_P2:
+            strcpy(aBuffer, "P2");
+            done = 1;
+            break;    
+        case REG_IEN0:
+            strcpy(aBuffer, "IEN0");
+            done = 1;
+            break;            
+        case REG_IP0:
+            strcpy(aBuffer, "IP0");
+            done = 1;
+            break;
+        case REG_P3:
+            strcpy(aBuffer, "P3");
+            done = 1;
+            break;            
+        case REG_IEN1:
+            strcpy(aBuffer, "IEN1");
+            done = 1;
+            break;            
+        case REG_IP1:
+            strcpy(aBuffer, "IP1");
+            done = 1;
+            break;
+        case REG_IRCON:
+            strcpy(aBuffer, "IRCON");
+            done = 1;
+            break;
+        case REG_CCEN:
+            strcpy(aBuffer, "CCEN");
+            done = 1;
+            break;
+        case REG_CCL1:
+            strcpy(aBuffer, "CCL1");
+            done = 1;
+            break;
+        case REG_CCH1:
+            strcpy(aBuffer, "CCH1");
+            done = 1;
+            break;
+        case REG_CCL2:
+            strcpy(aBuffer, "CCL2");
+            done = 1;
+            break;
+        case REG_CCH2:
+            strcpy(aBuffer, "CCH2");
+            done = 1;
+            break;
+        case REG_CCL3:
+            strcpy(aBuffer, "CCL3");
+            done = 1;
+            break;
+        case REG_CCH3:
+            strcpy(aBuffer, "CCH3");
+            done = 1;
+            break;            
+        case REG_T2CON:
+            strcpy(aBuffer, "T2CON"); 
+            done = 1;
+            break;
+        case REG_CRCL:
+            strcpy(aBuffer, "CRCL"); 
+            done = 1;
+            break;
+        case REG_CRCH:
+            strcpy(aBuffer, "CRCH"); 
+            done = 1;
+            break;
+        case REG_TL2:
+            strcpy(aBuffer, "TL2"); 
+            done = 1;
+            break;
+        case REG_TH2:
+            strcpy(aBuffer, "TH2"); 
+            done = 1;
+            break;
+        case REG_PSW:
+            strcpy(aBuffer, "PSW");
+            done = 1;
+            break;
+        case REG_ADCON:
+            strcpy(aBuffer, "ADCON");
+            done = 1;
+            break;
+        case REG_ADDAT:
+            strcpy(aBuffer, "ADDAT");
+            done = 1;
+            break;
+        case REG_DAPR:
+            strcpy(aBuffer, "DAPR");
+            done = 1;
+            break;
+        case REG_P6:
+            strcpy(aBuffer, "P6");
+            done = 1;
+            break;
+        case REG_ACC:
+            strcpy(aBuffer, "ACC"); 
+            done = 1;
+            break;
+        case REG_P4:
+            strcpy(aBuffer, "P4");
+            done = 1;
+            break;            
+        case REG_B:
+            strcpy(aBuffer, "B");
+            done = 1;
+            break;
+        case REG_P5:
+            strcpy(aBuffer, "P5");
             done = 1;
             break;
         }
@@ -140,14 +228,8 @@ void bitaddr_memonic(int aValue, char *aBuffer)
     {
         switch ((aValue & 0xf8) - 0x80)
         {
-        case REG_ACC:
-            strcpy(regname, "ACC"); 
-            break;
-        case REG_B:
-            strcpy(regname, "B");
-            break;
-        case REG_PSW:
-            strcpy(regname, "PSW");
+        case REG_P0:
+            strcpy(regname, "P0");
             break;
         case REG_SP:
             strcpy(regname, "SP");
@@ -157,48 +239,120 @@ void bitaddr_memonic(int aValue, char *aBuffer)
             break;
         case REG_DPH:
             strcpy(regname, "DPH");
-            break;
-        case REG_P0:
-            strcpy(regname, "P0");
-            break;
-        case REG_P1:
-            strcpy(regname, "P1");
-            break;
-        case REG_P2:
-            strcpy(regname, "P2");
-            break;
-        case REG_P3:
-            strcpy(regname, "P3");
-            break;
-        case REG_IP:
-            strcpy(regname, "IP");
-            break;
-        case REG_IE:
-            strcpy(regname, "IE");
-            break;
-        case REG_TMOD:
-            strcpy(regname, "TMOD");
+            break;            
+        case REG_PCON:
+            strcpy(regname, "PCON");
             break;
         case REG_TCON:
             strcpy(regname, "TCON");
             break;
-        case REG_TH0:
-            strcpy(regname, "TH0");
+        case REG_TMOD:
+            strcpy(regname, "TMOD");
             break;
         case REG_TL0:
             strcpy(regname, "TL0");
+            break;            
+        case REG_TL1:
+            strcpy(regname, "TL1");
+            break;
+        case REG_TH0:
+            strcpy(regname, "TH0");
             break;
         case REG_TH1:
             strcpy(regname, "TH1");
             break;
-        case REG_TL1:
-            strcpy(regname, "TL1");
+        case REG_P1:
+            strcpy(regname, "P1");
             break;
         case REG_SCON:
             strcpy(regname, "SCON");
             break;
-        case REG_PCON:
-            strcpy(regname, "PCON");
+        case REG_SBUF:
+            strcpy(regname, "SBUF");
+            break;
+        case REG_P2:
+            strcpy(regname, "P2");
+            break;    
+        case REG_IEN0:
+            strcpy(regname, "IEN0");
+            break;            
+        case REG_IP0:
+            strcpy(regname, "IP0");
+            break;
+        case REG_P3:
+            strcpy(regname, "P3");
+            break;            
+        case REG_IEN1:
+            strcpy(regname, "IEN1");
+            break;            
+        case REG_IP1:
+            strcpy(regname, "IP1");
+            break;
+        case REG_IRCON:
+            strcpy(regname, "IRCON");
+            break;
+        case REG_CCEN:
+            strcpy(regname, "CCEN");
+            break;
+        case REG_CCL1:
+            strcpy(regname, "CCL1");
+            break;
+        case REG_CCH1:
+            strcpy(regname, "CCH1");
+            break;
+        case REG_CCL2:
+            strcpy(regname, "CCL2");
+            break;
+        case REG_CCH2:
+            strcpy(regname, "CCH2");
+            break;
+        case REG_CCL3:
+            strcpy(regname, "CCL3");
+            break;
+        case REG_CCH3:
+            strcpy(regname, "CCH3");
+            break;            
+        case REG_T2CON:
+            strcpy(regname, "T2CON"); 
+            break;
+        case REG_CRCL:
+            strcpy(regname, "CRCL"); 
+            break;
+        case REG_CRCH:
+            strcpy(regname, "CRCH"); 
+            break;
+        case REG_TL2:
+            strcpy(regname, "TL2"); 
+            break;
+        case REG_TH2:
+            strcpy(regname, "TH2"); 
+            break;
+        case REG_PSW:
+            strcpy(regname, "PSW");
+            break;
+        case REG_ADCON:
+            strcpy(regname, "ADCON");
+            break;
+        case REG_ADDAT:
+            strcpy(regname, "ADDAT");
+            break;
+        case REG_DAPR:
+            strcpy(regname, "DAPR");
+            break;
+        case REG_P6:
+            strcpy(regname, "P6");
+            break;
+        case REG_ACC:
+            strcpy(regname, "ACC"); 
+            break;
+        case REG_P4:
+            strcpy(regname, "P4");
+            break;            
+        case REG_B:
+            strcpy(regname, "B");
+            break;
+        case REG_P5:
+            strcpy(regname, "P5");
             break;
         default:
             sprintf(regname, "%02Xh",(aValue & 0xF8));

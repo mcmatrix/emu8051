@@ -36,8 +36,8 @@
 static int position;
 static int logicmode = 0;
 static int portmode = 0;
-static int oldports[4];
-static unsigned char shiftregisters[4*4];
+static int oldports[7];
+static unsigned char shiftregisters[7*4];
 static int audiotick = 0;
 static FILE *audioout = NULL;
 
@@ -95,6 +95,22 @@ void logicboard_tick(struct em8051 *aCPU)
                 shiftregisters[i + 12] <<= 1;
                 shiftregisters[i + 12] |= (aCPU->mSFR[REG_P3] & (clockmask >> 1)) != 0;
             }
+            if ((oldports[4] & clockmask) == 0 && (aCPU->mSFR[REG_P4] & clockmask))
+            {
+                shiftregisters[i + 16] <<= 1;
+                shiftregisters[i + 16] |= (aCPU->mSFR[REG_P4] & (clockmask >> 1)) != 0;
+            }
+            if ((oldports[5] & clockmask) == 0 && (aCPU->mSFR[REG_P5] & clockmask))
+            {
+                shiftregisters[i + 20] <<= 1;
+                shiftregisters[i + 20] |= (aCPU->mSFR[REG_P5] & (clockmask >> 1)) != 0;
+            }
+            if ((oldports[6] & clockmask) == 0 && (aCPU->mSFR[REG_P6] & clockmask))
+            {
+                shiftregisters[i + 24] <<= 1;
+                shiftregisters[i + 24] |= (aCPU->mSFR[REG_P6] & (clockmask >> 1)) != 0;
+            }
+            
         }
     }
 
@@ -105,16 +121,14 @@ void logicboard_tick(struct em8051 *aCPU)
 		if (chardisplaybusy > 0)
 			chardisplaybusy--;
 
-		if (((aCPU->mSFR[REG_P3] & 0x20) == 0x20) && 
-			 ((oldports[3] & 0x80) == 0) &&
-			 ((aCPU->mSFR[REG_P3] & 0x80) != 0)) 
+		if (((aCPU->mSFR[REG_P4] & 0x01) == 0x01) && ((oldports[4] & 0x04) == 0) && ((aCPU->mSFR[REG_P4] & 0x04) != 0)) 
 		{
 			// Read op
 			// - E level rises from low to high on read ops			
 
 
-			if (aCPU->mSFR[REG_P3] & 0x40)
-			{   // P3.6
+			if (aCPU->mSFR[REG_P4] & 0x02)
+			{   // P4.1
 				// memory IO mode
 
 				if (!chardisplaybusy)
@@ -169,34 +183,34 @@ void logicboard_tick(struct em8051 *aCPU)
 			}
 		}
 
-		if (((aCPU->mSFR[REG_P3] & 0x20) != 0x20) && 
-			 ((oldports[3] & 0x80) != 0) &&
-			 ((aCPU->mSFR[REG_P3] & 0x80) == 0))
-		{	// P3.7
+		if (((aCPU->mSFR[REG_P4] & 0x01) != 0x01) && 
+			 ((oldports[4] & 0x04) != 0) &&
+			 ((aCPU->mSFR[REG_P4] & 0x04) == 0))
+		{	// P4.2
 			// Write op
 			// - E level drops from high to low on write ops
 			
 			if (chardisplay4bmode == 0)
 			{
-				chardisplaydata = aCPU->mSFR[REG_P1];
+				chardisplaydata = aCPU->mSFR[REG_P5];
 			}
 			else
 			{
 				if (!chardisplaytick)
 				{
-					chardisplaydata = (chardisplaydata & 0xf) | (aCPU->mSFR[REG_P1] & 0xf0);
+					chardisplaydata = (chardisplaydata & 0xf) | (aCPU->mSFR[REG_P5] & 0xf0);
 				}
 				else
 				{
-					chardisplaydata = (chardisplaydata & 0xf0) | ((aCPU->mSFR[REG_P1] & 0xf0) >> 4);
+					chardisplaydata = (chardisplaydata & 0xf0) | ((aCPU->mSFR[REG_P5] & 0xf0) >> 4);
 				}
 				chardisplaytick = !chardisplaytick;
 			}
 
 			if (!chardisplaytick || !chardisplay4bmode)
 			{
-				if (aCPU->mSFR[REG_P3] & 0x40)
-				{ // P3.6
+				if (aCPU->mSFR[REG_P4] & 0x02)
+				{ // P4.1
 					if (!chardisplaybusy)
 					{
 						// memory IO mode
@@ -422,6 +436,9 @@ void logicboard_tick(struct em8051 *aCPU)
     oldports[1] = aCPU->mSFR[REG_P1];
     oldports[2] = aCPU->mSFR[REG_P2];
     oldports[3] = aCPU->mSFR[REG_P3];
+    oldports[4] = aCPU->mSFR[REG_P4];
+    oldports[5] = aCPU->mSFR[REG_P5];
+    oldports[6] = aCPU->mSFR[REG_P6];    
 }
 
 static void logicboard_render_7segs(struct em8051 *aCPU)
@@ -439,14 +456,18 @@ static void logicboard_render_7segs(struct em8051 *aCPU)
 
 static void logicboard_render_registers()
 {
-    mvprintw(2, 40, "P0.0/1: %02Xh     P2.0/1: %02Xh", shiftregisters[0], shiftregisters[8]);
-    mvprintw(3, 40, "P0.2/3: %02Xh     P2.2/3: %02Xh", shiftregisters[1], shiftregisters[9]);
-    mvprintw(4, 40, "P0.4/5: %02Xh     P2.4/5: %02Xh", shiftregisters[2], shiftregisters[10]);
-    mvprintw(5, 40, "P0.6/7: %02Xh     P2.6/7: %02Xh", shiftregisters[3], shiftregisters[11]);
-    mvprintw(7, 40, "P1.0/1: %02Xh     P3.0/1: %02Xh", shiftregisters[4], shiftregisters[12]);
-    mvprintw(8, 40, "P1.2/3: %02Xh     P3.2/3: %02Xh", shiftregisters[5], shiftregisters[13]);
-    mvprintw(9, 40, "P1.4/5: %02Xh     P3.4/5: %02Xh", shiftregisters[6], shiftregisters[14]);
-    mvprintw(10, 40, "P1.6/7: %02Xh     P3.6/7: %02Xh", shiftregisters[7], shiftregisters[15]);
+    mvprintw(2, 40, "P0.0/1: %02Xh     P3.0/1: %02Xh", shiftregisters[0], shiftregisters[12]);
+    mvprintw(3, 40, "P0.2/3: %02Xh     P3.2/3: %02Xh", shiftregisters[1], shiftregisters[13]);
+    mvprintw(4, 40, "P0.4/5: %02Xh     P3.4/5: %02Xh", shiftregisters[2], shiftregisters[14]);
+    mvprintw(5, 40, "P0.6/7: %02Xh     P3.6/7: %02Xh", shiftregisters[3], shiftregisters[15]);    
+    mvprintw(6, 40, "P1.0/1: %02Xh     P4.0/1: %02Xh", shiftregisters[4], shiftregisters[16]);
+    mvprintw(7, 40, "P1.2/3: %02Xh     P4.2/3: %02Xh", shiftregisters[5], shiftregisters[17]);
+    mvprintw(8, 40, "P1.4/5: %02Xh     P4.4/5: %02Xh", shiftregisters[6], shiftregisters[18]);
+    mvprintw(9, 40, "P1.6/7: %02Xh     P4.6/7: %02Xh", shiftregisters[7], shiftregisters[19]);    
+    mvprintw(10, 40, "P2.0/1: %02Xh     P5.0/1: %02Xh", shiftregisters[8], shiftregisters[20]);
+    mvprintw(11, 40, "P2.2/3: %02Xh     P5.2/3: %02Xh", shiftregisters[9], shiftregisters[21]);
+    mvprintw(12, 40, "P2.4/5: %02Xh     P5.4/5: %02Xh", shiftregisters[10], shiftregisters[22]);
+    mvprintw(13, 40, "P2.6/7: %02Xh     P5.6/7: %02Xh", shiftregisters[11], shiftregisters[23]);   
 }
 
 static void logicboard_render_chardisplay()
@@ -481,10 +502,10 @@ static void logicboard_render_chardisplay()
 	mvprintw(5, 40, "Blinking %3s, 4bit %3s", (chardisplaydcb & 1)?"on":"off", (chardisplay4bmode & 1)?"on":"off");
 	mvprintw(6, 40, "4b tick:%d Busy:%-7d", chardisplaytick, chardisplaybusy);
 
-	mvprintw(10, 40, "P1.0-7 = DB0-7");
-	mvprintw(11, 40, "P3.7   = EN");
-	mvprintw(12, 40, "P3.6   = RS");
-	mvprintw(13, 40, "P3.5   = RW");
+	mvprintw(10, 40, "P5.0-7 = DB0-7");
+	mvprintw(11, 40, "P4.7   = EN");
+	mvprintw(12, 40, "P4.6   = RS");
+	mvprintw(13, 40, "P4.5   = RW");
 }
 
 static void logicboard_entermode()
@@ -499,7 +520,7 @@ static void logicboard_leavemode()
     switch (logicmode)
     {
     case 1:
-        mvprintw(2, 40, "               ");
+        mvprintw(2, 40, "                           ");
         mvprintw(3, 40, "               ");
         mvprintw(4, 40, "               ");
         mvprintw(5, 40, "               ");
@@ -510,10 +531,14 @@ static void logicboard_leavemode()
         mvprintw(3, 40, "                           ");
         mvprintw(4, 40, "                           ");
         mvprintw(5, 40, "                           ");
+        mvprintw(6, 40, "                           ");
         mvprintw(7, 40, "                           ");
         mvprintw(8, 40, "                           ");
         mvprintw(9, 40, "                           ");
         mvprintw(10, 40, "                           ");
+        mvprintw(11, 40, "                           ");
+        mvprintw(12, 40, "                           ");
+        mvprintw(13, 40, "                           ");
         break;
 	case 3:
 		mvprintw(2, 40, "                  ");
@@ -540,14 +565,13 @@ void build_logicboard_view(struct em8051 *aCPU)
     logicboard_entermode();
 }
 
-
 void logicboard_editor_keys(struct em8051 *aCPU, int ch)
 {
     int xorvalue = -1;
     switch (ch)
     {
     case KEY_RIGHT:
-        if (position == 4)
+        if (position == 6)
         {
             logicboard_leavemode();
             logicmode++;
@@ -556,7 +580,7 @@ void logicboard_editor_keys(struct em8051 *aCPU, int ch)
         }
         break;
     case KEY_LEFT:
-        if (position == 4)
+        if (position == 6)
         {
             logicboard_leavemode();
             logicmode--;
@@ -566,7 +590,7 @@ void logicboard_editor_keys(struct em8051 *aCPU, int ch)
         break;
     case KEY_DOWN:
         position++;
-        if (position > 4) position = 4;
+        if (position > 6) position = 6;
         break;
     case KEY_UP:
         position--;
@@ -613,6 +637,12 @@ void logicboard_editor_keys(struct em8051 *aCPU, int ch)
         case 3:
             p3out ^= 1 << xorvalue;
             break;
+        case 4:
+            p4out ^= 1 << xorvalue;
+            break;
+        case 5:
+            p5out ^= 1 << xorvalue;
+            break;        
         }
     }
 }
@@ -712,26 +742,71 @@ void logicboard_update(struct em8051 *aCPU)
         swstate[(data>>2)&1],
         swstate[(data>>1)&1],
         swstate[(data>>0)&1]);
+        
+    data = aCPU->mSFR[REG_P4];
+    mvprintw(16, 2, "P4 %c %c %c %c %c %c %c %c",
+        ledstate[(data>>7)&1],
+        ledstate[(data>>6)&1],
+        ledstate[(data>>5)&1],
+        ledstate[(data>>4)&1],
+        ledstate[(data>>3)&1],
+        ledstate[(data>>2)&1],
+        ledstate[(data>>1)&1],
+        ledstate[(data>>0)&1]);
 
-    mvprintw(17, 2, "  ");
+    data = p4out;
+    mvprintw(17, 2, "   %c %c %c %c %c %c %c %c",
+        swstate[(data>>7)&1],
+        swstate[(data>>6)&1],
+        swstate[(data>>5)&1],
+        swstate[(data>>4)&1],
+        swstate[(data>>3)&1],
+        swstate[(data>>2)&1],
+        swstate[(data>>1)&1],
+        swstate[(data>>0)&1]);
+
+    data = aCPU->mSFR[REG_P5];
+    mvprintw(19, 2, "P5 %c %c %c %c %c %c %c %c",
+        ledstate[(data>>7)&1],
+        ledstate[(data>>6)&1],
+        ledstate[(data>>5)&1],
+        ledstate[(data>>4)&1],
+        ledstate[(data>>3)&1],
+        ledstate[(data>>2)&1],
+        ledstate[(data>>1)&1],
+        ledstate[(data>>0)&1]);
+
+    data = p5out;
+    mvprintw(20, 2, "   %c %c %c %c %c %c %c %c",
+        swstate[(data>>7)&1],
+        swstate[(data>>6)&1],
+        swstate[(data>>5)&1],
+        swstate[(data>>4)&1],
+        swstate[(data>>3)&1],
+        swstate[(data>>2)&1],
+        swstate[(data>>1)&1],
+        swstate[(data>>0)&1]);
+        
+
+    mvprintw(23, 2, "  ");
 
     attron(A_REVERSE);
     switch (logicmode)
     {
     case 0:
-        mvprintw(17, 4, "< No additional hw     >");
+        mvprintw(23, 4, "< No additional hw     >");
         break;
     case 1:
-        mvprintw(17, 4, "< 7-seg displays       >");
+        mvprintw(23, 4, "< 7-seg displays       >");
         break;
     case 2:
-        mvprintw(17, 4, "< 8bit shift registers >");
+        mvprintw(23, 4, "< 8bit shift registers >");
         break;
 	case 3:
-		mvprintw(17, 4, "< 16x2 44780 display   >");
+		mvprintw(23, 4, "< 16x2 44780 display   >");
 		break;
 	case 4:
-        mvprintw(17, 4, "< 1bit audio out (P3.7)>");
+        mvprintw(23, 4, "< 1bit audio out (P3.7)>");
         break;
     }
     attroff(A_REVERSE);

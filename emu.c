@@ -71,6 +71,9 @@ int p0out = 0;
 int p1out = 0;
 int p2out = 0;
 int p3out = 0;
+int p4out = 0;
+int p5out = 0;
+int p6out = 0;
 
 int breakpoint = -1;
 
@@ -191,6 +194,18 @@ int emu_sfrread(struct em8051 *aCPU, int aRegister)
         {
             outputbyte =  p3out;
         }
+        if (aRegister == REG_P4 + 0x80)
+        {
+            outputbyte =  p4out;
+        }
+        if (aRegister == REG_P5 + 0x80)
+        {
+            outputbyte =  p5out;
+        }
+        if (aRegister == REG_P6 + 0x80)
+        {
+            outputbyte =  p6out;
+        }
     }
     else
     {
@@ -209,6 +224,18 @@ int emu_sfrread(struct em8051 *aCPU, int aRegister)
         if (aRegister == REG_P3 + 0x80)
         {
             outputbyte = p3out = emu_readvalue(aCPU, "P3 port read", p3out, 2);
+        }
+        if (aRegister == REG_P4 + 0x80)
+        {
+            outputbyte = p4out = emu_readvalue(aCPU, "P4 port read", p4out, 2);
+        }
+        if (aRegister == REG_P5 + 0x80)
+        {
+            outputbyte = p5out = emu_readvalue(aCPU, "P5 port read", p5out, 2);
+        }
+        if (aRegister == REG_P6 + 0x80)
+        {
+            outputbyte = p6out = emu_readvalue(aCPU, "P6 port read", p6out, 2);
         }
     }
     if (outputbyte != -1)
@@ -430,7 +457,7 @@ int main(int parc, char ** pars)
     }
 
     slk_set(1, "h)elp", 0);
-    slk_set(2, "l)oad", 0);
+    slk_set(2, "l/L)oad", 0);
     slk_set(3, "spc=step", 0);
     slk_set(4, "r)un", 0);
     slk_set(6, "v)iew", 0);
@@ -493,6 +520,9 @@ int main(int parc, char ** pars)
         case 'l':
             emu_load(&emu);
             break;
+        case 'L':
+            mem_load(&emu);
+            break;                        
         case ' ':
             runmode = 0;
             setSpeed(speed, runmode);

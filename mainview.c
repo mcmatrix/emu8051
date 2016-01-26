@@ -570,8 +570,8 @@ void mainview_update(struct em8051 *aCPU)
                 history[hoffs + REG_P1],
                 history[hoffs + REG_P2],
                 history[hoffs + REG_P3],
-                history[hoffs + REG_IP],
-                history[hoffs + REG_IE]);
+                history[hoffs + REG_IP1],
+                history[hoffs + REG_IEN0]);
             wprintw(ioregoutput,"%s",temp);
 
             sprintf(temp, "\n%02X   %02X    %02X  %02X   %02X  %02X   %02X   %02X",
