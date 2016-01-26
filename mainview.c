@@ -161,7 +161,7 @@ void build_main_view(struct em8051 *aCPU)
 
     ioregbox = subwin(stdscr, 8, 24, 0, 37);
     box(ioregbox,0,0);
-    mvwaddstr(ioregbox, 0, 2, "SP-P0-P1-P2-P3-IP-IE");
+    mvwaddstr(ioregbox, 0, 2, "SP-P0-P1-P2-P3-P4-P5");
     mvwaddstr(ioregbox, 6, 0, ">");
     mvwaddstr(ioregbox, 6, 23, "<");
     ioregoutput = subwin(ioregbox, 6, 21, 1, 39);
@@ -177,7 +177,7 @@ void build_main_view(struct em8051 *aCPU)
 
     spregbox = subwin(stdscr, 8, 43, 8, 37);
     box(spregbox,0,0);
-    mvwaddstr(spregbox, 0, 2, "TMOD-TCON--TH0-TL0--TH1-TL1--SCON-PCON");
+    mvwaddstr(spregbox, 0, 2, "TMODTCON-TH0-TL0-TH1-TL1-SCONPCON-IP-IE");
     mvwaddstr(spregbox, 6, 0, ">");
     mvwaddstr(spregbox, 6, 42, "<");
     spregoutput = subwin(spregbox, 6, 40, 9, 39);
@@ -570,11 +570,11 @@ void mainview_update(struct em8051 *aCPU)
                 history[hoffs + REG_P1],
                 history[hoffs + REG_P2],
                 history[hoffs + REG_P3],
-                history[hoffs + REG_IP1],
-                history[hoffs + REG_IEN0]);
+                history[hoffs + REG_P4],
+                history[hoffs + REG_P5]);
             wprintw(ioregoutput,"%s",temp);
 
-            sprintf(temp, "\n%02X   %02X    %02X  %02X   %02X  %02X   %02X   %02X",
+            sprintf(temp, "\n%02X  %02X   %02X  %02X  %02X  %02X  %02X  %02X   %02X %02X",
                 history[hoffs + REG_TMOD],
                 history[hoffs + REG_TCON],
                 history[hoffs + REG_TH0],
@@ -582,7 +582,9 @@ void mainview_update(struct em8051 *aCPU)
                 history[hoffs + REG_TH1],
                 history[hoffs + REG_TL1],
                 history[hoffs + REG_SCON],
-                history[hoffs + REG_PCON]);
+                history[hoffs + REG_PCON],
+                history[hoffs + REG_IP1],
+                history[hoffs + REG_IEN0]);
             wprintw(spregoutput, "%s", temp);
 
             lastclock++;

@@ -40,6 +40,7 @@ static int oldports[7];
 static unsigned char shiftregisters[7*4];
 static int audiotick = 0;
 static FILE *audioout = NULL;
+static FILE *rawout = NULL;
 
 // for the 2x16 character display
 static unsigned char chardisplayram[0x80];
@@ -65,6 +66,11 @@ static void closeaudio(void)
     len -= 32;
     fwrite(&len,1,4,audioout);
     fclose(audioout);
+}
+
+static void closeraw(void)
+{
+    fclose(rawout);
 }
 
 void logicboard_tick(struct em8051 *aCPU)
@@ -432,6 +438,20 @@ void logicboard_tick(struct em8051 *aCPU)
             audiotick -= opt_clock_hz / (44100 * 12);
         }
     }
+
+    if (logicmode == 5)
+    {
+        if (rawout == NULL)
+        {
+            rawout = fopen("rawout.bin", "wb");
+            fputc('B', rawout);
+            fputc('I', rawout);
+            fputc('N', rawout);
+            atexit(closeraw);
+        }
+        fputc(aCPU->mSFR[REG_P5], rawout);
+    }    
+    
     oldports[0] = aCPU->mSFR[REG_P0];
     oldports[1] = aCPU->mSFR[REG_P1];
     oldports[2] = aCPU->mSFR[REG_P2];
@@ -575,7 +595,7 @@ void logicboard_editor_keys(struct em8051 *aCPU, int ch)
         {
             logicboard_leavemode();
             logicmode++;
-            if (logicmode > 4) logicmode = 4;
+            if (logicmode > 5) logicmode = 5;
             logicboard_entermode();
         }
         break;
@@ -808,6 +828,9 @@ void logicboard_update(struct em8051 *aCPU)
 	case 4:
         mvprintw(23, 4, "< 1bit audio out (P3.7)>");
         break;
+	case 5:
+        mvprintw(23, 4, "< debug raw output (P5)>");
+        break;        
     }
     attroff(A_REVERSE);
 
