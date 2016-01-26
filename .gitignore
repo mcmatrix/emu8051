@@ -15,6 +15,9 @@
 #binary file
 emu
 
+# hex image
+*.hex
+
 #editor temp files
 \#*
 .\#*
