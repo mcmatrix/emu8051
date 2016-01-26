@@ -107,66 +107,100 @@ int do_op(struct em8051 *aCPU);
 // Internal: Pushes a value into stack
 void push_to_stack(struct em8051 *aCPU, int aValue);
 
-
+// SAB 80C515/80C535 Special Function Registers
 // SFR register locations
 enum SFR_REGS
 {
-    REG_ACC = 0xE0 - 0x80,
-    REG_B   = 0xF0 - 0x80,
-    REG_PSW = 0xD0 - 0x80,
-    REG_SP  = 0x81 - 0x80,
-    REG_DPL = 0x82 - 0x80,
-    REG_DPH = 0x83 - 0x80,
-    REG_P0  = 0x80 - 0x80,
-    REG_P1  = 0x90 - 0x80,
-    REG_P2  = 0xA0 - 0x80,
-    REG_P3  = 0xB0 - 0x80,
-    REG_IP  = 0xB8 - 0x80,
-    REG_IE  = 0xA8 - 0x80,
-    REG_TMOD = 0x89 - 0x80,
-    REG_TCON = 0x88 - 0x80,
-    REG_TH0 = 0x8C - 0x80,
-    REG_TL0 = 0x8A - 0x80,
-    REG_TH1 = 0x8D - 0x80,
-    REG_TL1 = 0x8B - 0x80,
-    REG_SCON = 0x98 - 0x80,
-    REG_PCON = 0x87 - 0x80
+    REG_P0  = 0x80 - 0x80, // Port 0
+    REG_SP  = 0x81 - 0x80, // Stack Pointer
+    REG_DPL = 0x82 - 0x80, // Data Pointer, Low Byte
+    REG_DPH = 0x83 - 0x80, // Data Pointer, High Byte
+    REG_PCON = 0x87 - 0x80, // Power Control Register
+    REG_TCON = 0x88 - 0x80, // Timer Control Register
+    REG_TMOD = 0x89 - 0x80, // Timer Mode Register
+    REG_TL0 = 0x8A - 0x80, // Timer 0, Low Byte
+    REG_TL1 = 0x8B - 0x80, // Timer 1, Low Byte
+    REG_TH0 = 0x8C - 0x80, // Timer 0, High Byte
+    REG_TH1 = 0x8D - 0x80, // Timer 1, High Byte
+    REG_P1  = 0x90 - 0x80, // Port 1
+    REG_SCON = 0x98 - 0x80, // Serial Channel Control Reg.
+    REG_SBUF = 0x99 - 0x80, // Serial Channel Buffer Reg.
+    REG_P2  = 0xA0 - 0x80, // Port 2
+    REG_IEN0  = 0xA8 - 0x80, // Interrupt Enable Register 0
+    REG_IP0  = 0xA9 - 0x80, // Interrupt Priority Register 0
+    REG_P3  = 0xB0 - 0x80, // Port 3
+    REG_IEN1  = 0xB8 - 0x80, // Interrupt Enable Register 1
+    REG_IP1  = 0xB9 - 0x80, // Interrupt Priority Register 1
+    REG_IRCON = 0xC0 - 0x80, // Interrupt Request Control Register
+    REG_CCEN = 0xC1 - 0x80, // Comp./Capture Enable Reg
+    REG_CCL1 = 0xC2 - 0x80, // Comp./Capture Reg. 1, Low Byte
+    REG_CCH1 = 0xC3 - 0x80, // Comp./Capture Reg. 1, High Byte
+    REG_CCL2 = 0xC4 - 0x80, // Comp./Capture Reg. 2, Low Byte
+    REG_CCH2 = 0xC5 - 0x80, // Comp./Capture Reg. 2, High Byte
+    REG_CCL3 = 0xC6 - 0x80, // Comp./Capture Reg. 3, Low Byte
+    REG_CCH3 = 0xC7 - 0x80, // Comp./Capture Reg. 3, High Byte
+    REG_T2CON = 0xC8 - 0x80, // Timer 2 Control Register
+    REG_CRCL = 0xCA - 0x80, // Com./Rel./Capt. Reg. Low Byte
+    REG_CRCH = 0xCB - 0x80, // Com./Rel./Capt. Reg. High Byte
+    REG_TL2 = 0xCC - 0x80, // Timer 2, Low Byte
+    REG_TH2 = 0xCD - 0x80, // Timer 2, High Byte
+    REG_PSW = 0xD0 - 0x80, // Program Status Word Register
+    REG_ADCON = 0xD8 - 0x80, // A/D Converter Control Register
+    REG_ADDAT = 0xD9 - 0x80, // A/D Converter Data Register
+    REG_DAPR = 0xDA - 0x80, // D/A Converter Program Register
+    REG_P6 = 0xDB - 0x80, // Port 6, Analog/Digital Input
+    REG_ACC = 0xE0 - 0x80, // Accumulator
+    REG_P4 = 0xE8 - 0x80, // Port 4
+    REG_B   = 0xF0 - 0x80, // B-Register
+    REG_P5   = 0xF8 - 0x80 // Port 5
 };
 
 enum PSW_BITS
 {
-    PSW_P = 0,
-    PSW_UNUSED = 1,
-    PSW_OV = 2,
-    PSW_RS0 = 3,
-    PSW_RS1 = 4,
-    PSW_F0 = 5,
-    PSW_AC = 6,
-    PSW_C = 7
+    PSW_P = 0, // Parity flag. Set/cleared by hardware each instruction cycle to indicate an odd/ even number of "one" bits in the accumulator, i.e. even parity.
+    PSW_F1 = 1, // General purpose user flag
+    PSW_OV = 2, // Overflow flag
+    PSW_RS0 = 3, // Register bank select control bits
+    PSW_RS1 = 4, // Register bank select control bits
+    PSW_F0 = 5, // General purpose user flag 0
+    PSW_AC = 6, // Auxiliary carry flag (for BCD operations)
+    PSW_CY = 7 // Carry flag
 };
 
 enum PSW_MASKS
 {
     PSWMASK_P = 0x01,
-    PSWMASK_UNUSED = 0x02,
+    PSWMASK_F1 = 0x02,
     PSWMASK_OV = 0x04,
     PSWMASK_RS0 = 0x08,
     PSWMASK_RS1 = 0x10,
     PSWMASK_F0 = 0x20,
     PSWMASK_AC = 0x40,
-    PSWMASK_C = 0x80
+    PSWMASK_CY = 0x80
 };
 
-enum IE_MASKS
+enum IEN0_MASKS
 {
-    IEMASK_EX0 = 0x01,
-    IEMASK_ET0 = 0x02,
-    IEMASK_EX1 = 0x04,
-    IEMASK_ET1 = 0x08,
-    IEMASK_ES  = 0x10,
-    IEMASK_ET2 = 0x20,
-    IEMASK_UNUSED = 0x40,
-    IEMASK_EA  = 0x80
+    IEN0MASK_EX0 = 0x01,
+    IEN0MASK_ET0 = 0x02,
+    IEN0MASK_EX1 = 0x04,
+    IEN0MASK_ET1 = 0x08,
+    IEN0MASK_ES  = 0x10,
+    IEN0MASK_ET2 = 0x20,
+    IEN0MASK_WDT = 0x40,
+    IEN0MASK_EA  = 0x80
+};
+
+enum IEN1_MASKS
+{
+    IEN1MASK_EADC = 0x01,
+    IEN1MASK_EX2 = 0x02,
+    IEN1MASK_EX3 = 0x04,
+    IEN1MASK_EX4 = 0x08,
+    IEN1MASK_EX5 = 0x10,
+    IEN1MASK_EX6 = 0x20,
+    IEN1MASK_SWDT = 0x40,
+    IEN1MASK_EXEN2 = 0x80
 };
 
 enum PT_MASKS
@@ -193,6 +227,30 @@ enum TCON_MASKS
     TCONMASK_TF1 = 0x80
 };
 
+enum T2CON_MASKS
+{
+    T2CONMASK_T2I0 = 0x01,
+    T2CONMASK_T2I1 = 0x02,
+    T2CONMASK_T2CM = 0x04,
+    T2CONMASK_T2R0 = 0x08,
+    T2CONMASK_T2R1 = 0x10,
+    T2CONMASK_I2FR = 0x20,
+    T2CONMASK_I3FR = 0x40,
+    T2CONMASK_T2PS = 0x80
+};
+
+enum IRCON_MASKS
+{
+    IRCONMASK_IADC = 0x01,
+    IRCONMASK_IEX2 = 0x02,
+    IRCONMASK_IEX3 = 0x04,
+    IRCONMASK_IEX4 = 0x08,
+    IRCONMASK_IEX5 = 0x10,
+    IRCONMASK_IEX6 = 0x20,
+    IRCONMASK_TF2 = 0x40,
+    IRCONMASK_EXF2 = 0x80
+};
+
 enum TMOD_MASKS
 {
     TMODMASK_M0_0 = 0x01,
@@ -205,14 +263,24 @@ enum TMOD_MASKS
     TMODMASK_GATE_1 = 0x80
 };
 
-enum IP_MASKS
+enum IP0_MASKS
 {
-    IPMASK_PX0 = 0x01,
-    IPMASK_PT0 = 0x02,
-    IPMASK_PX1 = 0x04,
-    IPMASK_PT1 = 0x08,
-    IPMASK_PS  = 0x10,
-    IPMASK_PT2 = 0x20
+    IP0MASK_IADC = 0x01,
+    IP0MASK_IEX2 = 0x02,
+    IP0MASK_IEX3 = 0x04,
+    IP0MASK_IEX4 = 0x08,
+    IP0MASK_IEX5 = 0x10,
+    IP0MASK_IEX6 = 0x20
+};
+
+enum IP1_MASKS
+{
+    IP1MASK_IE0 = 0x01,
+    IP1MASK_TF0 = 0x02,
+    IP1MASK_IE1 = 0x04,
+    IP1MASK_TF1 = 0x08,
+    IP1MASK_RI_TI = 0x10,
+    IP1MASK_TF2_EXF2 = 0x20
 };
 
 enum EM8051_EXCEPTION
@@ -224,4 +292,3 @@ enum EM8051_EXCEPTION
     EXCEPTION_IRET_ACC_MISMATCH, // acc not preserved over interrupt call
     EXCEPTION_ILLEGAL_OPCODE     // for the single 'reserved' opcode in the architecture
 };
-
