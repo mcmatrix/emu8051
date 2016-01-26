@@ -14,6 +14,6 @@ CFLAGS = -g -Wall -Wextra
 # 	$(CCPP) $(CLFLAGS)-c -o $@ $< $(CFLAGS)
 
 emu: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o emu -lcurses
+	$(CC) $(CFLAGS) $(OBJ) -o emu -lpdcurses
 clean:
 	-rm -rf *.o emu
