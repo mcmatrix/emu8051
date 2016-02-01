@@ -14,9 +14,11 @@
 
 #binary file
 emu
+emu.exe
 
-# hex image
+# hex, bin, mem image
 *.hex
+*.bin
 *.mem
 
 #editor temp files

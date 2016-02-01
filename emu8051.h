@@ -169,118 +169,118 @@ enum PSW_BITS
 
 enum PSW_MASKS
 {
-    PSWMASK_P = 0x01,
-    PSWMASK_F1 = 0x02,
-    PSWMASK_OV = 0x04,
-    PSWMASK_RS0 = 0x08,
-    PSWMASK_RS1 = 0x10,
-    PSWMASK_F0 = 0x20,
-    PSWMASK_AC = 0x40,
-    PSWMASK_CY = 0x80
+    PSW_P_MASK = (1<<PSW_P),
+    PSW_F1_MASK = (1<<PSW_F1),
+    PSW_OV_MASK = (1<<PSW_OV),
+    PSW_RS0_MASK = (1<<PSW_RS0),
+    PSW_RS1_MASK = (1<<PSW_RS1),
+    PSW_F0_MASK = (1<<PSW_F0),
+    PSW_AC_MASK = (1<<PSW_AC),
+    PSW_CY_MASK = (1<<PSW_CY)
 };
 
 enum IEN0_MASKS
 {
-    IEN0MASK_EX0 = 0x01,
-    IEN0MASK_ET0 = 0x02,
-    IEN0MASK_EX1 = 0x04,
-    IEN0MASK_ET1 = 0x08,
-    IEN0MASK_ES  = 0x10,
-    IEN0MASK_ET2 = 0x20,
-    IEN0MASK_WDT = 0x40,
-    IEN0MASK_EA  = 0x80
+    IEN0_EX0_MASK = 0x01,
+    IEN0_ET0_MASK = 0x02,
+    IEN0_EX1_MASK = 0x04,
+    IEN0_ET1_MASK = 0x08,
+    IEN0_ES_MASK  = 0x10,
+    IEN0_ET2_MASK = 0x20,
+    IEN0_WDT_MASK = 0x40,
+    IEN0_EA_MASK  = 0x80
 };
 
 enum IEN1_MASKS
 {
-    IEN1MASK_EADC = 0x01,
-    IEN1MASK_EX2 = 0x02,
-    IEN1MASK_EX3 = 0x04,
-    IEN1MASK_EX4 = 0x08,
-    IEN1MASK_EX5 = 0x10,
-    IEN1MASK_EX6 = 0x20,
-    IEN1MASK_SWDT = 0x40,
-    IEN1MASK_EXEN2 = 0x80
+    IEN1_EADC_MASK = 0x01,
+    IEN1_EX2_MASK = 0x02,
+    IEN1_EX3_MASK = 0x04,
+    IEN1_EX4_MASK = 0x08,
+    IEN1_EX5_MASK = 0x10,
+    IEN1_EX6_MASK = 0x20,
+    IEN1_SWDT_MASK = 0x40,
+    IEN1_EXEN2_MASK = 0x80
 };
 
 enum PT_MASKS
 {
-    PTMASK_PX0 = 0x01,
-    PTMASK_PT0 = 0x02,
-    PTMASK_PX1 = 0x04,
-    PTMASK_PT1 = 0x08,
-    PTMASK_PS  = 0x10,
-    PTMASK_PT2 = 0x20,
-    PTMASK_UNUSED1 = 0x40,
-    PTMASK_UNUSED2 = 0x80
+    PT_PX0_MASK = 0x01,
+    PT_PT0_MASK = 0x02,
+    PT_PX1_MASK = 0x04,
+    PT_PT1_MASK = 0x08,
+    PT_PS_MASK  = 0x10,
+    PT_PT2_MASK = 0x20,
+    PT_UNUSED1_MASK = 0x40,
+    PT_UNUSED2_MASK = 0x80
 };
 
 enum TCON_MASKS
 {
-    TCONMASK_IT0 = 0x01,
-    TCONMASK_IE0 = 0x02,
-    TCONMASK_IT1 = 0x04,
-    TCONMASK_IE1 = 0x08,
-    TCONMASK_TR0 = 0x10,
-    TCONMASK_TF0 = 0x20,
-    TCONMASK_TR1 = 0x40,
-    TCONMASK_TF1 = 0x80
+    TCON_IT0_MASK = 0x01,
+    TCON_IE0_MASK = 0x02,
+    TCON_IT1_MASK = 0x04,
+    TCON_IE1_MASK = 0x08,
+    TCON_TR0_MASK = 0x10,
+    TCON_TF0_MASK = 0x20,
+    TCON_TR1_MASK = 0x40,
+    TCON_TF1_MASK = 0x80
 };
 
 enum T2CON_MASKS
 {
-    T2CONMASK_T2I0 = 0x01,
-    T2CONMASK_T2I1 = 0x02,
-    T2CONMASK_T2CM = 0x04,
-    T2CONMASK_T2R0 = 0x08,
-    T2CONMASK_T2R1 = 0x10,
-    T2CONMASK_I2FR = 0x20,
-    T2CONMASK_I3FR = 0x40,
-    T2CONMASK_T2PS = 0x80
+    T2CON_T2I0_MASK = 0x01,
+    T2CON_T2I1_MASK = 0x02,
+    T2CON_T2CM_MASK = 0x04,
+    T2CON_T2R0_MASK = 0x08,
+    T2CON_T2R1_MASK = 0x10,
+    T2CON_I2FR_MASK = 0x20,
+    T2CON_I3FR_MASK = 0x40,
+    T2CON_T2PS_MASK = 0x80
 };
 
 enum IRCON_MASKS
 {
-    IRCONMASK_IADC = 0x01,
-    IRCONMASK_IEX2 = 0x02,
-    IRCONMASK_IEX3 = 0x04,
-    IRCONMASK_IEX4 = 0x08,
-    IRCONMASK_IEX5 = 0x10,
-    IRCONMASK_IEX6 = 0x20,
-    IRCONMASK_TF2 = 0x40,
-    IRCONMASK_EXF2 = 0x80
+    IRCON_IADC_MASK = 0x01,
+    IRCON_IEX2_MASK = 0x02,
+    IRCON_IEX3_MASK = 0x04,
+    IRCON_IEX4_MASK = 0x08,
+    IRCON_IEX5_MASK = 0x10,
+    IRCON_IEX6_MASK = 0x20,
+    IRCON_TF2_MASK = 0x40,
+    IRCON_EXF2_MASK = 0x80
 };
 
 enum TMOD_MASKS
 {
-    TMODMASK_M0_0 = 0x01,
-    TMODMASK_M1_0 = 0x02,
-    TMODMASK_CT_0 = 0x04,
-    TMODMASK_GATE_0 = 0x08,
-    TMODMASK_M0_1 = 0x10,
-    TMODMASK_M1_1 = 0x20,
-    TMODMASK_CT_1 = 0x40,
-    TMODMASK_GATE_1 = 0x80
+    TMOD_M0_0_MASK = 0x01,
+    TMOD_M1_0_MASK = 0x02,
+    TMOD_CT_0_MASK = 0x04,
+    TMOD_GATE_0_MASK = 0x08,
+    TMOD_M0_1_MASK = 0x10,
+    TMOD_M1_1_MASK = 0x20,
+    TMOD_CT_1_MASK = 0x40,
+    TMOD_GATE_1_MASK = 0x80
 };
 
 enum IP0_MASKS
 {
-    IP0MASK_IADC = 0x01, // A/D converter
-    IP0MASK_IEX2 = 0x02, // External interrupt 2
-    IP0MASK_IEX3 = 0x04, // External interrupt 3
-    IP0MASK_IEX4 = 0x08, // External interrupt 4
-    IP0MASK_IEX5 = 0x10, // External interrupt 5
-    IP0MASK_IEX6 = 0x20 // External interrupt 6
+    IP0_IADC_MASK = 0x01, // A/D converter
+    IP0_IEX2_MASK = 0x02, // External interrupt 2
+    IP0_IEX3_MASK = 0x04, // External interrupt 3
+    IP0_IEX4_MASK = 0x08, // External interrupt 4
+    IP0_IEX5_MASK = 0x10, // External interrupt 5
+    IP0_IEX6_MASK = 0x20 // External interrupt 6
 };
 
 enum IP1_MASKS
 {
-    IP1MASK_IE0 = 0x01, // External interrupt 0
-    IP1MASK_TF0 = 0x02, // Timer overflow
-    IP1MASK_IE1 = 0x04, // External interrupt 1
-    IP1MASK_TF1 = 0x08, // Timer 1 overflow
-    IP1MASK_RI_TI = 0x10, // Serial channel 
-    IP1MASK_TF2_EXF2 = 0x20 // Timer 2 overflow/ext. reload
+    IP1_IE0_MASK = 0x01, // External interrupt 0
+    IP1_TF0_MASK = 0x02, // Timer overflow
+    IP1_IE1_MASK = 0x04, // External interrupt 1
+    IP1_TF1_MASK = 0x08, // Timer 1 overflow
+    IP1_RI_TI_MASK = 0x10, // Serial channel 
+    IP1_TF2_EXF2_MASK = 0x20 // Timer 2 overflow/ext. reload
 };
 
 enum EM8051_EXCEPTION

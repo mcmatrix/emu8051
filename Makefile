@@ -16,4 +16,4 @@ CFLAGS = -g -Wall -Wextra
 emu: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o emu -lpdcurses
 clean:
-	-rm -rf *.o emu
+	-rm -rf *.o emu emu.exe

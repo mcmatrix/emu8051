@@ -202,7 +202,7 @@ void build_main_view(struct em8051 *aCPU)
 
 int getregoutput(struct em8051 *aCPU, int pos)
 {
-    int rx = 8 * ((aCPU->mSFR[REG_PSW] & (PSWMASK_RS0|PSWMASK_RS1))>>PSW_RS0);
+    int rx = 8 * ((aCPU->mSFR[REG_PSW] & (PSW_RS0_MASK|PSW_RS1_MASK))>>PSW_RS0);
     switch (pos)
     {
     case 0:
@@ -233,7 +233,7 @@ int getregoutput(struct em8051 *aCPU, int pos)
 
 void setregoutput(struct em8051 *aCPU, int pos, int val)
 {
-    int rx = 8 * ((aCPU->mSFR[REG_PSW] & (PSWMASK_RS0|PSWMASK_RS1))>>PSW_RS0);
+    int rx = 8 * ((aCPU->mSFR[REG_PSW] & (PSW_RS0_MASK|PSW_RS1_MASK))>>PSW_RS0);
     switch (pos)
     {
     case 0:
@@ -461,7 +461,7 @@ void mainview_editor_keys(struct em8051 *aCPU, int ch)
 
 void refresh_regoutput(struct em8051 *aCPU, int cursor)
 {
-    int rx = 8 * ((aCPU->mSFR[REG_PSW] & (PSWMASK_RS0|PSWMASK_RS1))>>PSW_RS0);
+    int rx = 8 * ((aCPU->mSFR[REG_PSW] & (PSW_RS0_MASK|PSW_RS1_MASK))>>PSW_RS0);
     
     mvwprintw(regoutput, LINES-19, 0, "%02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %04X",
         aCPU->mSFR[REG_ACC],
@@ -535,7 +535,7 @@ void mainview_update(struct em8051 *aCPU)
 
             wprintw(codeoutput, "%s", temp);
 
-            rx = 8 * ((history[hoffs + REG_PSW] & (PSWMASK_RS0|PSWMASK_RS1))>>PSW_RS0);
+            rx = 8 * ((history[hoffs + REG_PSW] & (PSW_RS0_MASK|PSW_RS1_MASK))>>PSW_RS0);
             
             sprintf(temp, "\n%02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %04X",
                 history[hoffs + REG_ACC],

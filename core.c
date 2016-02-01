@@ -38,7 +38,7 @@ static void timer_tick(struct em8051 *aCPU)
 
     // TODO: External int 0 flag
 
-    if ((aCPU->mSFR[REG_TMOD] & (TMODMASK_M0_0 | TMODMASK_M1_0)) == (TMODMASK_M0_0 | TMODMASK_M1_0))
+    if ((aCPU->mSFR[REG_TMOD] & (TMOD_M0_0_MASK | TMOD_M1_0_MASK)) == (TMOD_M0_0_MASK | TMOD_M1_0_MASK))
     {
         // timer/counter 0 in mode 3
 
@@ -46,11 +46,11 @@ static void timer_tick(struct em8051 *aCPU)
         
         // Check if we're run enabled
         // TODO: also run if GATE is one and INT is one (external interrupt)
-        if (!(aCPU->mSFR[REG_TMOD] & TMODMASK_GATE_0) && 
-            (aCPU->mSFR[REG_TCON] & TCONMASK_TR0))
+        if (!(aCPU->mSFR[REG_TMOD] & TMOD_GATE_0_MASK) && 
+            (aCPU->mSFR[REG_TCON] & TCON_TR0_MASK))
         {
             // check timer / counter mode
-            if (aCPU->mSFR[REG_TMOD] & TMODMASK_CT_0)
+            if (aCPU->mSFR[REG_TMOD] & TMOD_CT_0_MASK)
             {
                 // counter op;
                 // counter works if T0 pin was 1 and is now 0 (P3.4 on AT89C2051)
@@ -69,7 +69,7 @@ static void timer_tick(struct em8051 *aCPU)
             if (v > 0xff)
             {
                 // TL0 overflowed
-                aCPU->mSFR[REG_TCON] |= TCONMASK_TF0;
+                aCPU->mSFR[REG_TCON] |= TCON_TF0_MASK;
             }
         }
 
@@ -77,11 +77,11 @@ static void timer_tick(struct em8051 *aCPU)
         
         // Check if we're run enabled
         // TODO: also run if GATE is one and INT is one (external interrupt)
-        if (!(aCPU->mSFR[REG_TMOD] & TMODMASK_GATE_1) && 
-            (aCPU->mSFR[REG_TCON] & TCONMASK_TR1))
+        if (!(aCPU->mSFR[REG_TMOD] & TMOD_GATE_1_MASK) && 
+            (aCPU->mSFR[REG_TCON] & TCON_TR1_MASK))
         {
             // check timer / counter mode
-            if (aCPU->mSFR[REG_TMOD] & TMODMASK_CT_1)
+            if (aCPU->mSFR[REG_TMOD] & TMOD_CT_1_MASK)
             {
                 // counter op;
                 // counter works if T1 pin was 1 and is now 0
@@ -101,7 +101,7 @@ static void timer_tick(struct em8051 *aCPU)
             if (v > 0xff)
             {
                 // TH0 overflowed
-                aCPU->mSFR[REG_TCON] |= TCONMASK_TF1;
+                aCPU->mSFR[REG_TCON] |= TCON_TF1_MASK;
             }
         }
 
@@ -113,11 +113,11 @@ static void timer_tick(struct em8051 *aCPU)
         
         // Check if we're run enabled
         // TODO: also run if GATE is one and INT is one (external interrupt)
-        if (!(aCPU->mSFR[REG_TMOD] & TMODMASK_GATE_0) && 
-            (aCPU->mSFR[REG_TCON] & TCONMASK_TR0))
+        if (!(aCPU->mSFR[REG_TMOD] & TMOD_GATE_0_MASK) && 
+            (aCPU->mSFR[REG_TCON] & TCON_TR0_MASK))
         {
             // check timer / counter mode
-            if (aCPU->mSFR[REG_TMOD] & TMODMASK_CT_0)
+            if (aCPU->mSFR[REG_TMOD] & TMOD_CT_0_MASK)
             {
                 // counter op;
                 // counter works if T0 pin was 1 and is now 0 (P3.4 on AT89C2051)
@@ -131,7 +131,7 @@ static void timer_tick(struct em8051 *aCPU)
         
         if (increment)
         {
-            switch (aCPU->mSFR[REG_TMOD] & (TMODMASK_M0_0 | TMODMASK_M1_0))
+            switch (aCPU->mSFR[REG_TMOD] & (TMOD_M0_0_MASK | TMOD_M1_0_MASK))
             {
             case 0: // 13-bit timer
                 v = aCPU->mSFR[REG_TL0] & 0x1f; // lower 5 bits of TL0
@@ -146,11 +146,11 @@ static void timer_tick(struct em8051 *aCPU)
                     if (v > 0xff)
                     {
                         // TH0 overflowed; set bit
-                        aCPU->mSFR[REG_TCON] |= TCONMASK_TF0;
+                        aCPU->mSFR[REG_TCON] |= TCON_TF0_MASK;
                     }
                 }
                 break;
-            case TMODMASK_M0_0: // 16-bit timer/counter
+            case TMOD_M0_0_MASK: // 16-bit timer/counter
                 v = aCPU->mSFR[REG_TL0];
                 v++;
                 aCPU->mSFR[REG_TL0] = v & 0xff;
@@ -163,11 +163,11 @@ static void timer_tick(struct em8051 *aCPU)
                     if (v > 0xff)
                     {
                         // TH0 overflowed; set bit
-                        aCPU->mSFR[REG_TCON] |= TCONMASK_TF0;
+                        aCPU->mSFR[REG_TCON] |= TCON_TF0_MASK;
                     }
                 }
                 break;
-            case TMODMASK_M1_0: // 8-bit auto-reload timer
+            case TMOD_M1_0_MASK: // 8-bit auto-reload timer
                 v = aCPU->mSFR[REG_TL0];
                 v++;
                 aCPU->mSFR[REG_TL0] = v & 0xff;
@@ -175,7 +175,7 @@ static void timer_tick(struct em8051 *aCPU)
                 {
                     // TL0 overflowed; reload
                     aCPU->mSFR[REG_TL0] = aCPU->mSFR[REG_TH0];
-                    aCPU->mSFR[REG_TCON] |= TCONMASK_TF0;
+                    aCPU->mSFR[REG_TCON] |= TCON_TF0_MASK;
                 }
                 break;
             default: // two 8-bit timers
@@ -191,10 +191,10 @@ static void timer_tick(struct em8051 *aCPU)
         
         increment = 0;
 
-        if (!(aCPU->mSFR[REG_TMOD] & TMODMASK_GATE_1) && 
-            (aCPU->mSFR[REG_TCON] & TCONMASK_TR1))
+        if (!(aCPU->mSFR[REG_TMOD] & TMOD_GATE_1_MASK) && 
+            (aCPU->mSFR[REG_TCON] & TCON_TR1_MASK))
         {
-            if (aCPU->mSFR[REG_TMOD] & TMODMASK_CT_1)
+            if (aCPU->mSFR[REG_TMOD] & TMOD_CT_1_MASK)
             {
                 // counter op;
                 // counter works if T1 pin was 1 and is now 0
@@ -208,7 +208,7 @@ static void timer_tick(struct em8051 *aCPU)
 
         if (increment)
         {
-            switch (aCPU->mSFR[REG_TMOD] & (TMODMASK_M0_1 | TMODMASK_M1_1))
+            switch (aCPU->mSFR[REG_TMOD] & (TMOD_M0_1_MASK | TMOD_M1_1_MASK))
             {
             case 0: // 13-bit timer
                 v = aCPU->mSFR[REG_TL1] & 0x1f; // lower 5 bits of TL0
@@ -224,12 +224,12 @@ static void timer_tick(struct em8051 *aCPU)
                     {
                         // TH1 overflowed; set bit
                         // Only update TF1 if timer 0 is not in "mode 3"
-                        if (!(aCPU->mSFR[REG_TMOD] & (TMODMASK_M0_0 | TMODMASK_M1_0)))
-                            aCPU->mSFR[REG_TCON] |= TCONMASK_TF1;
+                        if (!(aCPU->mSFR[REG_TMOD] & (TMOD_M0_0_MASK | TMOD_M1_0_MASK)))
+                            aCPU->mSFR[REG_TCON] |= TCON_TF1_MASK;
                     }
                 }
                 break;
-            case TMODMASK_M0_1: // 16-bit timer/counter
+            case TMOD_M0_1_MASK: // 16-bit timer/counter
                 v = aCPU->mSFR[REG_TL1];
                 v++;
                 aCPU->mSFR[REG_TL1] = v & 0xff;
@@ -243,12 +243,12 @@ static void timer_tick(struct em8051 *aCPU)
                     {
                         // TH1 overflowed; set bit
                         // Only update TF1 if timer 0 is not in "mode 3"
-                        if (!(aCPU->mSFR[REG_TMOD] & (TMODMASK_M0_0 | TMODMASK_M1_0)))
-                            aCPU->mSFR[REG_TCON] |= TCONMASK_TF1;
+                        if (!(aCPU->mSFR[REG_TMOD] & (TMOD_M0_0_MASK | TMOD_M1_0_MASK)))
+                            aCPU->mSFR[REG_TCON] |= TCON_TF1_MASK;
                     }
                 }
                 break;
-            case TMODMASK_M1_1: // 8-bit auto-reload timer
+            case TMOD_M1_1_MASK: // 8-bit auto-reload timer
                 v = aCPU->mSFR[REG_TL1];
                 v++;
                 aCPU->mSFR[REG_TL1] = v & 0xff;
@@ -257,8 +257,8 @@ static void timer_tick(struct em8051 *aCPU)
                     // TL0 overflowed; reload
                     aCPU->mSFR[REG_TL1] = aCPU->mSFR[REG_TH1];
                     // Only update TF1 if timer 0 is not in "mode 3"
-                    if (!(aCPU->mSFR[REG_TMOD] & (TMODMASK_M0_0 | TMODMASK_M1_0)))
-                        aCPU->mSFR[REG_TCON] |= TCONMASK_TF1;
+                    if (!(aCPU->mSFR[REG_TMOD] & (TMOD_M0_0_MASK | TMOD_M1_0_MASK)))
+                        aCPU->mSFR[REG_TCON] |= TCON_TF1_MASK;
                 }
                 break;
             default: // disabled
@@ -280,18 +280,18 @@ void handle_interrupts(struct em8051 *aCPU)
     if (aCPU->mInterruptActive > 1) 
         return;    
 
-    if (aCPU->mSFR[REG_IEN0] & IEN0MASK_EA)
+    if (aCPU->mSFR[REG_IEN0] & IEN0_EA_MASK)
     {
         // Interrupts enabled
-        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_EX0 && aCPU->mSFR[REG_TCON] & TCONMASK_IE0)
+        if (aCPU->mSFR[REG_IEN0] & IEN0_EX0_MASK && aCPU->mSFR[REG_TCON] & TCON_IE0_MASK)
         {
             // External int 0 
             dest_ip = 0x3;
-            if (aCPU->mSFR[REG_IP1] & IP1MASK_IE0)
+            if (aCPU->mSFR[REG_IP1] & IP1_IE0_MASK)
                 hi = 1;
             lo = 1;
         }
-        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_ET0 && aCPU->mSFR[REG_TCON] & TCONMASK_TF0 && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0_ET0_MASK && aCPU->mSFR[REG_TCON] & TCON_TF0_MASK && !hi)
         {
             // Timer/counter 0 
             if (!lo)
@@ -299,13 +299,13 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0xb;
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP1] & IP1MASK_TF0)
+            if (aCPU->mSFR[REG_IP1] & IP1_TF0_MASK)
             {
                 hi = 1;
                 dest_ip = 0xb;
             }
         }
-        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_EX1 && aCPU->mSFR[REG_TCON] & TCONMASK_IE1 && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0_EX1_MASK && aCPU->mSFR[REG_TCON] & TCON_IE1_MASK && !hi)
         {
             // External int 1 
             if (!lo)
@@ -313,13 +313,13 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0x13;
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP1] & IP1MASK_IE1)
+            if (aCPU->mSFR[REG_IP1] & IP1_IE1_MASK)
             {
                 hi = 1;
                 dest_ip = 0x13;
             }
         }
-        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_ET1 && aCPU->mSFR[REG_TCON] & TCONMASK_TF1 && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0_ET1_MASK && aCPU->mSFR[REG_TCON] & TCON_TF1_MASK && !hi)
         {
             // Timer/counter 1 enabled
             if (!lo)
@@ -327,13 +327,13 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0x1b;
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP1] & IP1MASK_TF1)
+            if (aCPU->mSFR[REG_IP1] & IP1_TF1_MASK)
             {
                 hi = 1;
                 dest_ip = 0x1b;
             }
         }
-        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_ES && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0_ES_MASK && !hi)
         {
             // Serial port interrupt 
             if (!lo)
@@ -341,14 +341,14 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0x23;
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP1] & IP1MASK_RI_TI)
+            if (aCPU->mSFR[REG_IP1] & IP1_RI_TI_MASK)
             {
                 hi = 1;
                 dest_ip = 0x23;
             }
             // TODO
         }
-        if (aCPU->mSFR[REG_IEN0] & IEN0MASK_ET2 && !hi)
+        if (aCPU->mSFR[REG_IEN0] & IEN0_ET2_MASK && !hi)
         {
             // Timer 2 (8052 only)
             if (!lo)
@@ -356,7 +356,7 @@ void handle_interrupts(struct em8051 *aCPU)
                 dest_ip = 0x2b; // guessed
                 lo = 1;
             }
-            if (aCPU->mSFR[REG_IP1] & IP1MASK_TF2_EXF2)
+            if (aCPU->mSFR[REG_IP1] & IP1_TF2_EXF2_MASK)
             {
                 hi = 1;
                 dest_ip = 0x2b; // guessed
@@ -383,10 +383,10 @@ void handle_interrupts(struct em8051 *aCPU)
     switch (dest_ip)
     {
     case 0xb:
-        aCPU->mSFR[REG_TCON] &= ~TCONMASK_TF0; // clear overflow flag
+        aCPU->mSFR[REG_TCON] &= ~TCON_TF0_MASK; // clear overflow flag
         break;
     case 0x1b:
-        aCPU->mSFR[REG_TCON] &= ~TCONMASK_TF1; // clear overflow flag
+        aCPU->mSFR[REG_TCON] &= ~TCON_TF1_MASK; // clear overflow flag
         break;
     }
 
@@ -431,7 +431,7 @@ int tick(struct em8051 *aCPU)
         v ^= v >> 4;
         v &= 0xf;
         v = (0x6996 >> v) & 1;
-        aCPU->mSFR[REG_PSW] = (aCPU->mSFR[REG_PSW] & ~PSWMASK_P) | (v * PSWMASK_P);
+        aCPU->mSFR[REG_PSW] = (aCPU->mSFR[REG_PSW] & ~PSW_P_MASK) | (v * PSW_P_MASK);
     }
 
     timer_tick(aCPU);
